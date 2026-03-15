@@ -1,248 +1,335 @@
-openapi: 3.0.3 
-info: 
-  title: "Notebook API" 
-  version: "0.0.1" 
-paths: 
-  /api/contacts: 
-    get: 
-      summary: Получение всех контактов через пагинацию
-      operationId: GetContacts 
-      parameters: 
-        - name: pageToken 
-          in: query
-          required: false
-          schema:
-            type: string
-            nullable: true
-          description: Paging token (opaque string, may be JSON-serialized internally)
-          example: null
-        - name: pageSize 
-          in: query
-          required: true
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 1000
-          description: Paging 
-          example: 100
-      responses: 
-        '200':
-          description: OK
+openapi: 3.0.3
+info:
+  title: Notebook API
+  version: 0.0.1
+servers:
+- url: /
+paths:
+  /api/contacts:
+    get:
+      operationId: GetContacts
+      parameters:
+      - description: "Paging token (opaque string, may be JSON-serialized internally)"
+        explode: true
+        in: query
+        name: pageToken
+        required: false
+        schema:
+          nullable: true
+          type: string
+        style: form
+      - description: Paging
+        example: 100
+        explode: true
+        in: query
+        name: pageSize
+        required: true
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+        style: form
+      responses:
+        "200":
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/GetContacts'
               example:
                 contacts:
-                  - name: "Егор Щербинин"
-                    number: "89992226622"
-                    email: "sherb@mail.ru"
-                    age: 22
-                  - name: "Никита Дресвянников"
-                    number: "87772223344"
-                    email: "dresv234@yamdex.ru"
-                    age: 22
-                pageToken: "dsjkfs2h3kj32jd2h3"
-        '400':
+                - name: Егор Щербинин
+                  number: "89992226622"
+                  email: sherb@mail.ru
+                  age: 22
+                - name: Никита Дресвянников
+                  number: "87772223344"
+                  email: dresv234@yamdex.ru
+                  age: 22
+                pageToken: dsjkfs2h3kj32jd2h3
+              schema:
+                $ref: "#/components/schemas/GetContacts"
+          description: OK
+        "400":
           description: Validation error
+      summary: Получение всех контактов через пагинацию
     post:
-      summary: Создание контакта
       operationId: PostContact
       requestBody:
-        required: true
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/CreateContactRequest'
             example:
-              name: "Иван Петров"
+              name: Иван Петров
               number: "+79991112233"
               age: 25
-              city: "Москва"
-              description: "Коллега"
+              city: Москва
+              description: Коллега
+            schema:
+              $ref: "#/components/schemas/CreateContactRequest"
+        required: true
       responses:
-        '201':
+        "201":
           description: Created
+      summary: Создание контакта
   /api/contact/{id}:
     get:
-      summary: Получение конкретного контакта
       operationId: GetContact
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 33
+      - example: 33
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
       responses:
-        '200':
+        "200":
+          content:
+            application/json:
+              example:
+                name: Егор Щербинин
+                number: "89992226622"
+                email: sherb@mail.ru
+                age: 22
+              schema:
+                $ref: "#/components/schemas/GetContact"
           description: OK
+        "404":
+          description: Not Found
+      summary: Получение конкретного контакта
+    patch:
+      operationId: PatchContact
+      parameters:
+      - example: 33
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            example:
+              age: 25
+              city: Москва
+            schema:
+              $ref: "#/components/schemas/UpdateContactRequest"
+        required: true
+      responses:
+        "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetContact'
-              example:
-                name: "Егор Щербинин"
-                number: "89992226622"
-                email: "sherb@mail.ru"
-                age: 22  
-        '404':
+                $ref: "#/components/schemas/GetContact"
+          description: OK
+        "404":
           description: Not Found
+      summary: Изменение контакта
     put:
-      summary: Полное изменение контакта
       operationId: PutContact
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 33
-      requestBody:
+      - example: 33
+        explode: false
+        in: path
+        name: id
         required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/CreateContactRequest'
             example:
-              name: "Иван Петров"
+              name: Иван Петров
               number: "+79991112233"
               age: 25
-              city: "Москва"
-              description: "Коллега"
-      responses:
-        '200':
-          description: OK
-        '404':
-          description: Not Found
-    patch:
-      summary: Изменение контакта
-      operationId: PatchContact
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-          example: 33
-      requestBody:
-        required: true
-        content:
-          application/json:
+              city: Москва
+              description: Коллега
             schema:
-              $ref: '#/components/schemas/UpdateContactRequest'
-            example:
-              age: 25
-              city: "Москва"
+              $ref: "#/components/schemas/CreateContactRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+      summary: Полное изменение контакта
 components:
   schemas:
     GetContacts:
-      type: object
-      required: [contacts]
+      example:
+        pageToken: pageToken
+        contacts:
+        - number: "82223334455"
+          city: Moscow
+          name: Alexander
+          description: Лучший друг
+          age: 11
+          email: Alexander22@mail.ru
+        - number: "82223334455"
+          city: Moscow
+          name: Alexander
+          description: Лучший друг
+          age: 11
+          email: Alexander22@mail.ru
       properties:
         contacts:
-          type: array
-          minItems: 1
           items:
-            $ref: '#/components/schemas/GetContact'
+            $ref: "#/components/schemas/GetContact"
+          minItems: 1
+          title: contacts
+          type: array
         pageToken:
-          type: string
           nullable: true
+          title: pageToken
+          type: string
+      required:
+      - contacts
+      title: GetContacts
+      type: object
     GetContact:
-      type: object
-      required: [name, number, age]
+      example:
+        number: "82223334455"
+        city: Moscow
+        name: Alexander
+        description: Лучший друг
+        age: 11
+        email: Alexander22@mail.ru
       properties:
         name:
-          type: string
+          example: Alexander
           nullable: false
-          example: "Alexander"
+          title: name
+          type: string
         number:
-          type: string
-          nullable: false
           example: "82223334455"
+          maxLength: 11
           minLength: 11
-          maxLength: 11 
-        age:
-          type: integer
-          minimum: 0
-          maximum: 150
           nullable: false
-          example: 11
-        email:
+          title: number
           type: string
+        age:
+          example: 11
+          maximum: 150
+          minimum: 0
+          nullable: false
+          title: age
+          type: integer
+        email:
+          example: Alexander22@mail.ru
           format: email
           nullable: false
-          example: "Alexander22@mail.ru"
-        city:
-          type: string 
-          nullable: false
-          example: "Moscow"
-        description:
+          title: email
           type: string
+        city:
+          example: Moscow
+          nullable: false
+          title: city
+          type: string
+        description:
+          example: Лучший друг
           nullable: true
-          example: "Лучший друг"
+          title: description
+          type: string
+      required:
+      - age
+      - name
+      - number
+      title: GetContact
+      type: object
     CreateContactRequest:
-      type: object
-      required: [name, number, age]
+      example:
+        number: "82223334455"
+        city: Moscow
+        name: Alexander
+        description: Лучший друг
+        age: 11
+        email: Alexander22@mail.ru
       properties:
         name:
-          type: string
+          example: Alexander
           nullable: false
-          example: "Alexander"
+          title: name
+          type: string
         number:
-          type: string
-          nullable: false
           example: "82223334455"
+          maxLength: 11
           minLength: 11
-          maxLength: 11 
-        age:
-          type: integer
-          minimum: 0
-          maximum: 150
           nullable: false
-          example: 11
-        email:
+          title: number
           type: string
+        age:
+          example: 11
+          maximum: 150
+          minimum: 0
+          nullable: false
+          title: age
+          type: integer
+        email:
+          example: Alexander22@mail.ru
           format: email
           nullable: false
-          example: "Alexander22@mail.ru"
-        city:
-          type: string 
-          nullable: false
-          example: "Moscow"
-        description:
+          title: email
           type: string
+        city:
+          example: Moscow
+          nullable: false
+          title: city
+          type: string
+        description:
+          example: Лучший друг
           nullable: true
-          example: "Лучший друг"
+          title: description
+          type: string
+      required:
+      - age
+      - name
+      - number
+      title: CreateContactRequest
+      type: object
     UpdateContactRequest:
-      type: object
+      example:
+        number: "82223334455"
+        city: Moscow
+        name: Alexander
+        description: Лучший друг
+        age: 11
+        email: Alexander22@mail.ru
       properties:
         name:
-          type: string
+          example: Alexander
           nullable: false
-          example: "Alexander"
+          title: name
+          type: string
         number:
-          type: string
-          nullable: false
           example: "82223334455"
+          maxLength: 11
           minLength: 11
-          maxLength: 11 
-        age:
-          type: integer
-          minimum: 0
-          maximum: 150
           nullable: false
-          example: 11
-        email:
+          title: number
           type: string
+        age:
+          example: 11
+          maximum: 150
+          minimum: 0
+          nullable: false
+          title: age
+          type: integer
+        email:
+          example: Alexander22@mail.ru
           format: email
           nullable: false
-          example: "Alexander22@mail.ru"
-        city:
-          type: string 
-          nullable: false
-          example: "Moscow"
-        description:
+          title: email
           type: string
+        city:
+          example: Moscow
+          nullable: false
+          title: city
+          type: string
+        description:
+          example: Лучший друг
           nullable: true
-          example: "Лучший друг"
+          title: description
+          type: string
+      title: UpdateContactRequest
+      type: object
