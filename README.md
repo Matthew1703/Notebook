@@ -37,3 +37,4 @@ To run the tests:
 pip3 install pytest
 PYTHONPATH=src pytest tests
 ```
+![Swagger](swagger.png)
