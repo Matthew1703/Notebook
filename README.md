@@ -38,3 +38,28 @@ pip3 install pytest
 PYTHONPATH=src pytest tests
 ```
 ![Swagger](swagger.png)
+
+
+## Мониторинг
+
+### Рост запросов
+
+
+<img width="975" height="672" alt="Снимок экрана 2026-04-05 в 23 47 43" src="https://github.com/user-attachments/assets/7e7250ad-1cf4-4136-9266-1060d04d38c0" />
+
+### Количество запросов по эндпоинтам
+
+<img width="979" height="696" alt="Снимок экрана 2026-04-05 в 23 48 45" src="https://github.com/user-attachments/assets/454609f6-42ea-42cc-86e5-21bae24dc400" />
+
+### 90 квантиль продолжительности запросов
+
+<img width="976" height="649" alt="Снимок экрана 2026-04-05 в 23 49 49" src="https://github.com/user-attachments/assets/d9b4dc0d-5f2d-43c6-9ff6-35043ceb2972" />
+
+### Распределение контактов по возрасту
+
+<img width="980" height="675" alt="Снимок экрана 2026-04-05 в 23 50 39" src="https://github.com/user-attachments/assets/a7f58d97-ed8e-4565-af72-a2b8a4e4e212" />
+
+### Соотношение просмотров к созданию контактов
+
+<img width="980" height="685" alt="Снимок экрана 2026-04-05 в 23 51 50" src="https://github.com/user-attachments/assets/2d09b20f-25e6-4d24-8d3d-5e2f67d5f7c0" />
+
