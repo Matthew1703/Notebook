@@ -1,0 +1,50 @@
+- name: Gather facts from hosts
+  hosts: monitoring
+  tasks:
+    - setup:
+
+- name: Install monitoring
+  hosts: monitoring
+  become: yes
+  roles:
+    - prometheus
+    - grafana
+
+- name: Install app
+  hosts: monitoring
+  become: yes
+  tasks:
+    - name: Clone repository from Gitlab
+      ansible.builtin.git:
+        repo: "https://{{ github_token }}@github.com/Matthew1703/Notebook.git"
+        dest: "~/Notebook/"
+        version: "main"
+        accept_hostkey: yes
+        force: yes
+
+    - name: Install build tools and compilers
+      ansible.builtin.apt:
+        name:
+          - build-essential
+          - g++
+          - python3-dev
+        state: present
+
+    - name: Install requirements from file
+      ansible.builtin.pip:
+        requirements: /root/Notebook/requirements.txt
+        virtualenv: /root/Notebook/venv
+        virtualenv_command: python3 -m venv
+
+    - name: Install additional packages
+      ansible.builtin.pip:
+        name:
+          - uvicorn
+          - fastapi
+        virtualenv: /root/Notebook/venv
+
+    - name: Start service
+      ansible.builtin.systemd:
+        name: myapp
+        state: started
+    

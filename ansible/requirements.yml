@@ -1,0 +1,9 @@
+roles:
+  - name: prometheus
+    src: git@gitlab.com:roles7912543/prometheus.git
+    version: main                 
+    scm: git
+  - name: grafana
+    src: git@gitlab.com:roles7912543/grafana.git
+    version: main                 
+    scm: git

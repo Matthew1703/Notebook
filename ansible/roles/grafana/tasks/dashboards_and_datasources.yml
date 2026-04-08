@@ -1,0 +1,27 @@
+- name: grafana / Add datasources
+  ansible.builtin.copy:
+    src: "{{ monitoring_localconfig_path }}/files/datasources.yml"
+    dest: /etc/grafana/provisioning/datasources/datasources.yml
+    owner: grafana
+    group: grafana
+    mode: '0750'
+  when: lookup('file', '{{ monitoring_localconfig_path }}/files/datasources.yml') != ''
+
+- name: grafana / Add provisioning-dashboards
+  ansible.builtin.copy:
+    src: "{{ monitoring_localconfig_path }}/files/provisioning-dashboards.yml"
+    dest: /etc/grafana/provisioning/dashboards/dashboards.yml
+    owner: grafana
+    group: grafana
+    mode: '0750'
+  when: lookup('file', '{{ monitoring_localconfig_path }}/files/provisioning-dashboards.yml') != ''
+
+- name: grafana / Create directory
+  ansible.builtin.file:
+    path: "/etc/grafana/dashboards"
+    state: directory
+    owner: grafana
+    group: grafana
+    mode: '0750'
+  when: lookup('file', '{{ monitoring_localconfig_path }}/files/provisioning-dashboards.yml') != ''
+

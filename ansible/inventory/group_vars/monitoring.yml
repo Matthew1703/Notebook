@@ -1,0 +1,4 @@
+monitoring_localconfig_path: "{{ playbook_dir }}/inventory/monitoring"
+prometheus_service: prometheus
+prometheus_version: 2.53.2
+grafana_service: grafana-server
