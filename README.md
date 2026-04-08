@@ -59,7 +59,4 @@ PYTHONPATH=src pytest tests
 
 <img width="980" height="675" alt="Снимок экрана 2026-04-05 в 23 50 39" src="https://github.com/user-attachments/assets/a7f58d97-ed8e-4565-af72-a2b8a4e4e212" />
 
-### Соотношение просмотров к созданию контактов
-
-<img width="980" height="685" alt="Снимок экрана 2026-04-05 в 23 51 50" src="https://github.com/user-attachments/assets/2d09b20f-25e6-4d24-8d3d-5e2f67d5f7c0" />
 
