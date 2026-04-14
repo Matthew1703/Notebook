@@ -17,8 +17,7 @@ from metrics import (
     update_db_size_gauge
 )
 
-logger = logging.getLogger(__name__)
-print("---------", logger.level)
+logger = logging.getLogger()
 
 contacts_db = {}
 next_id = 1
@@ -73,8 +72,6 @@ class MyApiImpl(BaseDefaultApi):
                 city=contact.get("city"),
                 description=contact.get("description")
             )
-        except HTTPException:
-            raise
         except Exception as e:
             logger.error(f"get_contact error for id {id}: {e}", exc_info=True)
             raise
@@ -95,8 +92,6 @@ class MyApiImpl(BaseDefaultApi):
                 "description": create_contact_request.description
             }
             return None
-        except HTTPException:
-            raise
         except Exception as e:
             logger.error(f"put_contact error for id {id}: {e}", exc_info=True)
             raise
@@ -129,8 +124,6 @@ class MyApiImpl(BaseDefaultApi):
                 city=contact.get("city"),
                 description=contact.get("description")
             )
-        except HTTPException:
-            raise
         except Exception as e:
             logger.error(f"patch_contact error for id {id}: {e}", exc_info=True)
             raise
