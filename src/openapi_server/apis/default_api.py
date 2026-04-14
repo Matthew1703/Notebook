@@ -17,7 +17,7 @@ from fastapi import (  # noqa: F401
 )
 
 from pydantic import Field, StrictInt, StrictStr
-from typing import Any, Optional
+from typing import Optional
 from typing_extensions import Annotated
 from openapi_server.models.create_contact_request import CreateContactRequest
 from openapi_server.models.get_contact import GetContact
