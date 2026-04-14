@@ -1,7 +1,6 @@
 # coding: utf-8
 
 import logging
-from typing import Dict, List  # noqa: F401
 import importlib
 import pkgutil
 
@@ -11,19 +10,12 @@ import openapi_server.impl
 from fastapi import (  # noqa: F401
     APIRouter,
     Body,
-    Cookie,
-    Depends,
-    Form,
-    Header,
     HTTPException,
     Path,
     Query,
-    Response,
-    Security,
-    status,
+    Request
 )
 
-from openapi_server.models.extra_models import TokenModel  # noqa: F401
 from pydantic import Field, StrictInt, StrictStr
 from typing import Any, Optional
 from typing_extensions import Annotated
