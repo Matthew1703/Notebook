@@ -31,7 +31,7 @@ class MyApiImpl(BaseDefaultApi):
             contacts_list = list(contacts_db.values())
             return GetContacts(contacts=contacts_list, page_token=None)
         except Exception as e:
-            logger.error(f"get_contacts error: {e}", exc_info=True)
+            logger.error(f"get_contacts error: {e}")
             raise
 
     async def post_contact(self, create_contact_request: CreateContactRequest) -> None:
@@ -54,7 +54,7 @@ class MyApiImpl(BaseDefaultApi):
             update_db_size_gauge(len(contacts_db))
             return None
         except Exception as e:
-            logger.error(f"post_contact error: {e}", exc_info=True)
+            logger.error(f"post_contact error: {e}")
             raise
 
     async def get_contact(self, id: int) -> GetContact:
@@ -73,7 +73,7 @@ class MyApiImpl(BaseDefaultApi):
                 description=contact.get("description")
             )
         except Exception as e:
-            logger.error(f"get_contact error for id {id}: {e}", exc_info=True)
+            logger.error(f"get_contact error for id {id}: {e}")
             raise
 
     async def put_contact(self, id: int, create_contact_request: CreateContactRequest) -> None:
@@ -93,7 +93,7 @@ class MyApiImpl(BaseDefaultApi):
             }
             return None
         except Exception as e:
-            logger.error(f"put_contact error for id {id}: {e}", exc_info=True)
+            logger.error(f"put_contact error for id {id}: {e}")
             raise
 
     async def patch_contact(self, id: int, update_contact_request: UpdateContactRequest) -> GetContact:
@@ -125,5 +125,5 @@ class MyApiImpl(BaseDefaultApi):
                 description=contact.get("description")
             )
         except Exception as e:
-            logger.error(f"patch_contact error for id {id}: {e}", exc_info=True)
+            logger.error(f"patch_contact error for id {id}: {e}")
             raise
