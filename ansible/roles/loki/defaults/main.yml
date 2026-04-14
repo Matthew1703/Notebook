@@ -1,0 +1,5 @@
+#SPDX-License-Identifier: MIT-0
+---
+loki_service: loki.service
+loki_version: 2.9.0
+# defaults file for loki

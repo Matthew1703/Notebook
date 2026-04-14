@@ -9,6 +9,8 @@
   roles:
     - prometheus
     - grafana
+    - promtail 
+    - loki
 
 - name: Install app
   hosts: monitoring

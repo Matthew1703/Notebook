@@ -1,4 +1,8 @@
 monitoring_localconfig_path: "{{ playbook_dir }}/inventory/monitoring"
+app_localconfig_path: "{{ playbook_dir }}/inventory/monitoring"
 prometheus_service: prometheus
 prometheus_version: 2.53.2
 grafana_service: grafana-server
+monitoring_loki_ipadress: 159.194.203.159
+loki_version: 2.9.0
+loki_service: loki.service

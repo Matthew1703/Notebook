@@ -18,6 +18,7 @@ from metrics import (
 )
 
 logger = logging.getLogger(__name__)
+print("---------", logger.level)
 
 contacts_db = {}
 next_id = 1

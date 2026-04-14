@@ -7,3 +7,11 @@ roles:
     src: git@gitlab.com:roles7912543/grafana.git
     version: main                 
     scm: git
+  - name: promtail
+    src: git@gitlab.com:roles7912543/promtail.git
+    version: main                 
+    scm: git
+  - name: loki
+    src: git@gitlab.com:roles7912543/loki.git
+    version: main                 
+    scm: git

@@ -1,0 +1,103 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: loki / Update apt
+  apt:
+    update_cache: yes
+
+- name: Install unzip
+  ansible.builtin.package:
+    name: unzip
+    state: present
+
+- name: loki / Download Loki
+  ansible.builtin.get_url:
+    url: https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki-linux-amd64.zip
+    dest: /tmp/loki.zip
+
+- name: loki / Extract to temp directory
+  ansible.builtin.unarchive:
+    src: /tmp/loki.zip
+    dest: /tmp
+    remote_src: yes
+
+- name: loki / Install Loki binary
+  ansible.builtin.copy:
+    src: /tmp/loki-linux-amd64
+    dest: /usr/local/bin/
+    mode: '0755'
+    owner: root
+    group: root
+    remote_src: yes
+
+- name: loki / Create loki group
+  ansible.builtin.group:
+    name: loki
+    state: present
+
+- name: loki / Create loki user
+  ansible.builtin.user:
+    name: loki
+    group: loki
+    shell: /bin/false
+    home: /home/loki
+
+- name: loki / Create directory /etc/loki
+  ansible.builtin.file:
+    path: /etc/loki
+    state: directory
+    mode: '0755'
+    owner: loki
+    group: loki
+
+- name: loki / Copy loki config file
+  ansible.builtin.copy:
+    src: "{{ monitoring_localconfig_path }}/files/loki-local-config.yaml"
+    dest: /etc/loki/loki-local-config.yaml
+    owner: loki
+    group: loki
+    mode: '0750'
+  notify: Restart loki service
+
+- name: loki / Create directory /opt/loki
+  ansible.builtin.file:
+    path: /opt/loki
+    state: directory
+    mode: '0755'
+    owner: loki
+    group: loki
+
+- name: loki / Change owner
+  ansible.builtin.file:
+    path: /usr/local/bin/loki-linux-amd64
+    state: file
+    owner: loki
+    group: loki
+
+- name: loki / Change owner recursively
+  ansible.builtin.file:
+    path: "{{ dir }}"
+    state: directory
+    owner: loki
+    group: loki
+    recurse: yes
+  loop_control:
+    loop_var: dir
+  loop:
+    - /opt/loki
+    - /etc/loki
+
+- name: loki / Copy unit file
+  ansible.builtin.copy:
+    src: "{{ monitoring_localconfig_path }}/files/{{ loki_service }}"
+    dest: /etc/systemd/system/loki.service
+    owner: loki
+    group: loki
+    mode: '0750'
+
+- name: loki / Start loki service
+  systemd:
+    state: started
+    enabled: true
+    name: "{{ loki_service }}"
+
+# tasks file for loki
