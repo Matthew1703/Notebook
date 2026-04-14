@@ -1,5 +1,6 @@
 # coding: utf-8
-
+import logging
+from logging.handlers import RotatingFileHandler
 from fastapi import FastAPI
 from prometheus_fastapi_instrumentator import Instrumentator
 from openapi_server.apis.default_api import router as DefaultApiRouter
@@ -16,3 +17,15 @@ app = FastAPI(
 Instrumentator().instrument(app).expose(app)
 
 app.include_router(DefaultApiRouter)
+
+file_handler = RotatingFileHandler(
+    '/var/log/myapp/app.log',  
+    maxBytes=10_000_000,      
+    backupCount=1
+)
+
+logging.basicConfig(
+    handlers=[file_handler],
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)

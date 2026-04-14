@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import logging
 from typing import Dict, List  # noqa: F401
 import importlib
 import pkgutil
@@ -38,6 +39,7 @@ ns_pkg = openapi_server.impl
 for _, name, _ in pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + "."):
     importlib.import_module(name)
 
+logger = logging.getLogger(__name__)
 
 @router.get(
     "/api/contacts",
@@ -50,9 +52,11 @@ for _, name, _ in pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + "."):
     response_model_by_alias=True,
 )
 async def get_contacts(
+    request: Request,
     page_size: Annotated[int, Field(le=1000, strict=True, ge=1, description="Paging")] = Query(None, description="Paging", alias="pageSize", ge=1, le=1000),
     page_token: Annotated[Optional[StrictStr], Field(description="Paging token (opaque string, may be JSON-serialized internally)")] = Query(None, description="Paging token (opaque string, may be JSON-serialized internally)", alias="pageToken"),
 ) -> GetContacts:
+    logger.info(f"Request path: {request.url.path}, request method: {request.method}")
     if not BaseDefaultApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
     return await BaseDefaultApi.subclasses[0]().get_contacts(page_size, page_token)
@@ -68,8 +72,10 @@ async def get_contacts(
     response_model_by_alias=True,
 )
 async def post_contact(
+    request: Request,
     create_contact_request: CreateContactRequest = Body(None, description=""),
 ) -> None:
+    logger.info(f"Request path: {request.url.path}, request method: {request.method}")
     if not BaseDefaultApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
     return await BaseDefaultApi.subclasses[0]().post_contact(create_contact_request)
@@ -86,8 +92,10 @@ async def post_contact(
     response_model_by_alias=True,
 )
 async def get_contact(
+    request: Request,
     id: StrictInt = Path(..., description=""),
 ) -> GetContact:
+    logger.info(f"Request path: {request.url.path}, request method: {request.method}")
     if not BaseDefaultApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
     return await BaseDefaultApi.subclasses[0]().get_contact(id)
@@ -104,9 +112,11 @@ async def get_contact(
     response_model_by_alias=True,
 )
 async def put_contact(
+    request: Request,
     id: StrictInt = Path(..., description=""),
     create_contact_request: CreateContactRequest = Body(None, description=""),
 ) -> None:
+    logger.info(f"Request path: {request.url.path}, request method: {request.method}")
     if not BaseDefaultApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
     return await BaseDefaultApi.subclasses[0]().put_contact(id, create_contact_request)
@@ -123,9 +133,11 @@ async def put_contact(
     response_model_by_alias=True,
 )
 async def patch_contact(
+    request: Request,
     id: StrictInt = Path(..., description=""),
     update_contact_request: UpdateContactRequest = Body(None, description=""),
 ) -> GetContact:
+    logger.info(f"Request path: {request.url.path}, request method: {request.method}")
     if not BaseDefaultApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
     return await BaseDefaultApi.subclasses[0]().patch_contact(id, update_contact_request)
