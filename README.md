@@ -40,7 +40,7 @@ PYTHONPATH=src pytest tests
 ![Swagger](swagger.png)
 
 
-## Мониторинг
+## Метрики
 
 ### Рост запросов
 
@@ -58,5 +58,9 @@ PYTHONPATH=src pytest tests
 ### Распределение контактов по возрасту
 
 <img width="980" height="675" alt="Снимок экрана 2026-04-05 в 23 50 39" src="https://github.com/user-attachments/assets/a7f58d97-ed8e-4565-af72-a2b8a4e4e212" />
+
+## Логирование
+Были добавлены базовые логи в сервис через встроенную библиотеку питона logging, они пишутся в файл /var/log/myapp/app.log. Был развернут promtail, который забирает их и отправляет в loki. В графане подключен loki как datasource. Пример выполнения запроса в графане:
+<img width="1387" height="895" alt="Снимок экрана 2026-04-14 в 23 05 14" src="https://github.com/user-attachments/assets/494f9578-d395-4bd8-a488-68e4b6b72d3e" />
 
 
