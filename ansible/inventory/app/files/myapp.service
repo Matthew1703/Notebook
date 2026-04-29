@@ -7,8 +7,8 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=/root/Notebook/src
-Environment="PATH=/root/Notebook/myenv/bin"
-ExecStart=/root/Notebook/myenv/bin/uvicorn openapi_server.main:app --host 0.0.0.0 --port 8080
+Environment="PATH=/root/Notebook/venv/bin"
+ExecStart=/root/Notebook/venv/bin/uvicorn openapi_server.main:app --host 0.0.0.0 --port 8080
 Restart=on-failure
 RestartSec=10
 
