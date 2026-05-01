@@ -15,3 +15,7 @@ roles:
     src: git@gitlab.com:roles7912543/loki.git
     version: main                 
     scm: git
+  - name: otl-collector
+    src: git@gitlab.com:roles7912543/otl-collector.git
+    version: main
+    scm: git

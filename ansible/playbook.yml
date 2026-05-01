@@ -3,14 +3,7 @@
   tasks:
     - setup:
 
-- name: Install monitoring
-  hosts: monitoring
-  become: yes
-  roles:
-    - prometheus
-    - grafana
-    - promtail 
-    - loki
+
 
 - name: Install app
   hosts: monitoring

@@ -1,0 +1,16 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for otl-collector
+- name: otl-collector / Update apt
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: otl-collector / Download .deb package
+  ansible.builtin.get_url:
+    url: https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v{{ otl_collector_version }}/otelcol_{{ otl_collector_version }}_linux_amd64.deb
+    dest: /tmp/package.deb
+    mode: '0644'
+
+- name: otl-collector / Install .deb package 
+  ansible.builtin.apt:
+    deb: /tmp/package.deb

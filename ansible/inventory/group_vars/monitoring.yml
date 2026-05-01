@@ -6,3 +6,4 @@ grafana_service: grafana-server
 monitoring_loki_ipadress: 159.194.203.159
 loki_version: 2.9.0
 loki_service: loki.service
+otl_collector_version: 0.151.0

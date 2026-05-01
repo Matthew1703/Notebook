@@ -39,3 +39,4 @@ opentelemetry-sdk==1.28.2
 opentelemetry-exporter-otlp==1.28.2
 opentelemetry-instrumentation-fastapi==0.49b2
 opentelemetry-proto==1.28.2
+prometheus_fastapi_instrumentator

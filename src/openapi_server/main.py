@@ -50,10 +50,10 @@ otlp_exporter = OTLPSpanExporter(
     insecure=True  
 )
 
-console_exporter = ConsoleSpanExporter()
-provider.add_span_processor(SimpleSpanProcessor(console_exporter))
+# console_exporter = ConsoleSpanExporter()
+# provider.add_span_processor(SimpleSpanProcessor(console_exporter))
 
-# provider.add_span_processor(BatchSpanProcessor(otlp_exporter))
+provider.add_span_processor(BatchSpanProcessor(otlp_exporter))
 
 
 

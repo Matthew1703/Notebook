@@ -5,7 +5,7 @@
     owner: grafana
     group: grafana
     mode: '0750'
-  when: lookup('file', '{{ monitoring_localconfig_path }}/files/datasources.yml') != ''
+  when: lookup('file', '{{ monitoring_localconfig_path }}/files/datasources.yml', errors='ignore') != ''
 
 - name: grafana / Add provisioning-dashboards
   ansible.builtin.copy:
@@ -14,7 +14,7 @@
     owner: grafana
     group: grafana
     mode: '0750'
-  when: lookup('file', '{{ monitoring_localconfig_path }}/files/provisioning-dashboards.yml') != ''
+  when: lookup('file', '{{ monitoring_localconfig_path }}/files/provisioning-dashboards.yml', errors='ignore') != ''
 
 - name: grafana / Create directory
   ansible.builtin.file:
@@ -23,5 +23,5 @@
     owner: grafana
     group: grafana
     mode: '0750'
-  when: lookup('file', '{{ monitoring_localconfig_path }}/files/provisioning-dashboards.yml') != ''
+  when: lookup('file', '{{ monitoring_localconfig_path }}/files/provisioning-dashboards.yml', errors='ignore') != ''
 
