@@ -44,7 +44,7 @@ resource = Resource.create({
 
 provider = TracerProvider(resource=resource)
 
-otlp_endpoint = "http://localhost:4317"
+otlp_endpoint = "http://localhost:4343"
 otlp_exporter = OTLPSpanExporter(
     endpoint=otlp_endpoint,
     insecure=True  
