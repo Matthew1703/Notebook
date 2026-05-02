@@ -12,6 +12,7 @@
     - promtail 
     - loki
     - otl-collector
+    - tempo
 
 - name: Install app
   hosts: monitoring

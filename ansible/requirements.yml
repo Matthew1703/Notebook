@@ -19,3 +19,7 @@ roles:
     src: git@gitlab.com:roles7912543/otl-collector.git
     version: main
     scm: git
+  - name: tempo
+    src: git@gitlab.com:roles7912543/tempo.git
+    version: main
+    scm: git

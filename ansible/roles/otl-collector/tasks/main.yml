@@ -14,3 +14,10 @@
 - name: otl-collector / Install .deb package 
   ansible.builtin.apt:
     deb: /tmp/package.deb
+
+- name: otl-collector / copy congig.yaml
+  ansible.builtin.copy:
+    src: "{{ monitoring_localconfig_path }}/files/otel-config.yaml"
+    dest: /etc/otelcol/config.yaml
+    mode: '0644'
+  notify: otl-collector / restart otelcol

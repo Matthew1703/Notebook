@@ -1,9 +1,10 @@
 #SPDX-License-Identifier: MIT-0
 ---
-# handlers file for otl-collector
-- name: otl-collector / restart otelcol
+# handlers file for tempo
+
+- name: tempo / restart tempo
   ansible.builtin.systemd:
-    name: otelcol
+    name: tempo
     state: restarted
     daemon_reload: yes
   become: yes
