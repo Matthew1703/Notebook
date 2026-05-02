@@ -63,4 +63,10 @@ PYTHONPATH=src pytest tests
 Были добавлены базовые логи в сервис через встроенную библиотеку питона logging, они пишутся в файл /var/log/myapp/app.log. Был развернут promtail, который забирает их и отправляет в loki. В графане подключен loki как datasource. Пример выполнения запроса в графане:
 <img width="1387" height="895" alt="Снимок экрана 2026-04-14 в 23 05 14" src="https://github.com/user-attachments/assets/494f9578-d395-4bd8-a488-68e4b6b72d3e" />
 
+## Трейсы
+Настроил автогенерацию для эндпоинтов через билиотеку opentelemetry. Далее развернул otl-collector, в него отправлял трейсы. И развернул tempo, для хранения трейсов, otl-collector ему отправлял трейсы. В графане добавил датасорс соответственно с tempo, трейсы есть, отображаются:
+<img width="1792" height="952" alt="Снимок экрана 2026-05-02 в 15 15 21" src="https://github.com/user-attachments/assets/548bdb58-9afc-4313-9340-48a92da29478" />
+Поделал запросы:
+<img width="1790" height="777" alt="Снимок экрана 2026-05-02 в 15 21 49" src="https://github.com/user-attachments/assets/f6601984-1751-4889-a704-9c9a5c02bd15" />
+
 
