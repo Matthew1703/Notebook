@@ -100,7 +100,8 @@ class GetContacts(BaseModel):
             {
                 "contacts": [
                     GetContact.from_dict(_item) for _item in (obj.get("contacts") or [])
-                ] or None,  
+                ]
+                or None,
                 "pageToken": obj.get("pageToken"),
             }
         )

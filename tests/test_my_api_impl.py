@@ -1,18 +1,18 @@
 # tests/test_my_api_impl.py
-import sys
 import os
+import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 import pytest
 from fastapi import HTTPException
-from openapi_server.impl.my_impl import MyApiImpl
-from openapi_server.models.create_contact_request import CreateContactRequest
-from openapi_server.models.update_contact_request import UpdateContactRequest
-from openapi_server.models.get_contact import GetContact
-from openapi_server.models.get_contacts import GetContacts
 
 import openapi_server.impl.my_impl as my_impl_module
+from openapi_server.impl.my_impl import MyApiImpl
+from openapi_server.models.create_contact_request import CreateContactRequest
+from openapi_server.models.get_contact import GetContact
+from openapi_server.models.get_contacts import GetContacts
+from openapi_server.models.update_contact_request import UpdateContactRequest
 
 
 @pytest.fixture
