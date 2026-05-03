@@ -66,7 +66,7 @@ jobs:
 
       - name: Add target server to known_hosts
         run: |
-          mkdir ~/.ssh/known_hosts
+          mkdir -p ~/.ssh/known_hosts
           ssh-keyscan -H 159.194.203.159 >> ~/.ssh/known_hosts
 
       - name: Deploy
