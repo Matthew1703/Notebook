@@ -65,7 +65,9 @@ jobs:
           pip install ansible
 
       - name: Install roles ansible
-        run: ansible-galaxy install -r requirements.yml
+        run:
+          cd ansible
+          ansible-galaxy install -r requirements.yml -p roles/
 
       - name: Deploy
         run: |
