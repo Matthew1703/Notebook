@@ -1,29 +1,20 @@
 # coding: utf-8
 
-import logging
 import importlib
+import logging
 import pkgutil
-
-from openapi_server.apis.default_api_base import BaseDefaultApi
-import openapi_server.impl
-
-from fastapi import (  # noqa: F401
-    APIRouter,
-    Body,
-    HTTPException,
-    Path,
-    Query,
-    Request
-)
-
-from pydantic import Field, StrictInt, StrictStr
 from typing import Optional
+
+from fastapi import APIRouter, Body, HTTPException, Path, Query, Request  # noqa: F401
+from pydantic import Field, StrictInt, StrictStr
 from typing_extensions import Annotated
+
+import openapi_server.impl
+from openapi_server.apis.default_api_base import BaseDefaultApi
 from openapi_server.models.create_contact_request import CreateContactRequest
 from openapi_server.models.get_contact import GetContact
 from openapi_server.models.get_contacts import GetContacts
 from openapi_server.models.update_contact_request import UpdateContactRequest
-
 
 router = APIRouter()
 
@@ -32,6 +23,7 @@ for _, name, _ in pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + "."):
     importlib.import_module(name)
 
 logger = logging.getLogger(__name__)
+
 
 @router.get(
     "/api/contacts",
@@ -45,8 +37,19 @@ logger = logging.getLogger(__name__)
 )
 async def get_contacts(
     request: Request,
-    page_size: Annotated[int, Field(le=1000, strict=True, ge=1, description="Paging")] = Query(None, description="Paging", alias="pageSize", ge=1, le=1000),
-    page_token: Annotated[Optional[StrictStr], Field(description="Paging token (opaque string, may be JSON-serialized internally)")] = Query(None, description="Paging token (opaque string, may be JSON-serialized internally)", alias="pageToken"),
+    page_size: Annotated[
+        int, Field(le=1000, strict=True, ge=1, description="Paging")
+    ] = Query(None, description="Paging", alias="pageSize", ge=1, le=1000),
+    page_token: Annotated[
+        Optional[StrictStr],
+        Field(
+            description="Paging token (opaque string, may be JSON-serialized internally)"
+        ),
+    ] = Query(
+        None,
+        description="Paging token (opaque string, may be JSON-serialized internally)",
+        alias="pageToken",
+    ),
 ) -> GetContacts:
     logger.info(f"Request path: {request.url.path}, request method: {request.method}")
     if not BaseDefaultApi.subclasses:
@@ -132,4 +135,6 @@ async def patch_contact(
     logger.info(f"Request path: {request.url.path}, request method: {request.method}")
     if not BaseDefaultApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
-    return await BaseDefaultApi.subclasses[0]().patch_contact(id, update_contact_request)
+    return await BaseDefaultApi.subclasses[0]().patch_contact(
+        id, update_contact_request
+    )

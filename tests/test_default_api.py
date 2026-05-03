@@ -1,15 +1,19 @@
 # coding: utf-8
 
-from fastapi.testclient import TestClient
-
-
-from pydantic import Field, StrictInt, StrictStr  # noqa: F401
 from typing import Any, Optional  # noqa: F401
+
+from fastapi.testclient import TestClient
+from pydantic import Field, StrictInt, StrictStr  # noqa: F401
 from typing_extensions import Annotated  # noqa: F401
-from openapi_server.models.create_contact_request import CreateContactRequest  # noqa: F401
+
+from openapi_server.models.create_contact_request import (  # noqa: F401
+    CreateContactRequest,
+)
 from openapi_server.models.get_contact import GetContact  # noqa: F401
 from openapi_server.models.get_contacts import GetContacts  # noqa: F401
-from openapi_server.models.update_contact_request import UpdateContactRequest  # noqa: F401
+from openapi_server.models.update_contact_request import (  # noqa: F401
+    UpdateContactRequest,
+)
 
 
 def test_get_contacts(client: TestClient):
@@ -17,14 +21,13 @@ def test_get_contacts(client: TestClient):
 
     Получение всех контактов через пагинацию
     """
-    params = [("page_token", 'page_token_example'),     ("page_size", 100)]
-    headers = {
-    }
+    params = [("page_token", "page_token_example"), ("page_size", 100)]
+    headers = {}
     response = client.request(
-       "GET",
-       "/api/contacts",
-       headers=headers,
-       params=params,
+        "GET",
+        "/api/contacts",
+        headers=headers,
+        params=params,
     )
 
     assert response.status_code == 200
@@ -35,16 +38,22 @@ def test_post_contact(client: TestClient):
 
     Создание контакта
     """
-    create_contact_request = {"number":"82223334455","city":"Moscow","name":"Alexander","description":"Лучший друг","age":11,"email":"Alexander22@mail.ru"}
-
-    headers = {
+    create_contact_request = {
+        "number": "82223334455",
+        "city": "Moscow",
+        "name": "Alexander",
+        "description": "Лучший друг",
+        "age": 11,
+        "email": "Alexander22@mail.ru",
     }
 
+    headers = {}
+
     response = client.request(
-       "POST",
-       "/api/contacts",
-       headers=headers,
-       json=create_contact_request,
+        "POST",
+        "/api/contacts",
+        headers=headers,
+        json=create_contact_request,
     )
 
     assert response.status_code == 200
@@ -56,13 +65,12 @@ def test_get_contact(client: TestClient):
     Получение конкретного контакта
     """
 
-    headers = {
-    }
+    headers = {}
 
     response = client.request(
-       "GET",
-       "/api/contact/{id}".format(id=33),
-       headers=headers,
+        "GET",
+        "/api/contact/{id}".format(id=33),
+        headers=headers,
     )
 
     assert response.status_code == 200
@@ -73,16 +81,22 @@ def test_put_contact(client: TestClient):
 
     Полное изменение контакта
     """
-    create_contact_request = {"number":"82223334455","city":"Moscow","name":"Alexander","description":"Лучший друг","age":11,"email":"Alexander22@mail.ru"}
-
-    headers = {
+    create_contact_request = {
+        "number": "82223334455",
+        "city": "Moscow",
+        "name": "Alexander",
+        "description": "Лучший друг",
+        "age": 11,
+        "email": "Alexander22@mail.ru",
     }
 
+    headers = {}
+
     response = client.request(
-       "PUT",
-       "/api/contact/{id}".format(id=33),
-       headers=headers,
-       json=create_contact_request,
+        "PUT",
+        "/api/contact/{id}".format(id=33),
+        headers=headers,
+        json=create_contact_request,
     )
 
     assert response.status_code == 200
@@ -93,16 +107,21 @@ def test_patch_contact(client: TestClient):
 
     Изменение контакта
     """
-    update_contact_request = {"number":"82223334455","city":"Moscow","name":"Alexander","description":"Лучший друг","age":11,"email":"Alexander22@mail.ru"}
-
-    headers = {
+    update_contact_request = {
+        "number": "82223334455",
+        "city": "Moscow",
+        "name": "Alexander",
+        "description": "Лучший друг",
+        "age": 11,
+        "email": "Alexander22@mail.ru",
     }
+
+    headers = {}
     response = client.request(
-       "PATCH",
-       "/api/contact/{id}".format(id=33),
-       headers=headers,
-       json=update_contact_request,
+        "PATCH",
+        "/api/contact/{id}".format(id=33),
+        headers=headers,
+        json=update_contact_request,
     )
 
     assert response.status_code == 200
-

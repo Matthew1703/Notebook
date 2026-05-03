@@ -1,30 +1,35 @@
 # coding: utf-8
 import logging
 from typing import Optional
+
 from fastapi import HTTPException
+
+from metrics import (
+    business_contact_age_histogram,
+    business_contact_views_total,
+    business_contacts_created_total,
+    business_contacts_patched_total,
+    business_contacts_updated_total,
+    business_contacts_views_total,
+    update_db_size_gauge,
+)
 from openapi_server.apis.default_api_base import BaseDefaultApi
 from openapi_server.models.create_contact_request import CreateContactRequest
 from openapi_server.models.get_contact import GetContact
 from openapi_server.models.get_contacts import GetContacts
 from openapi_server.models.update_contact_request import UpdateContactRequest
-from metrics import (
-    business_contacts_views_total,
-    business_contacts_created_total,
-    business_contact_age_histogram,
-    business_contact_views_total,
-    business_contacts_updated_total,
-    business_contacts_patched_total,
-    update_db_size_gauge
-)
 
 logger = logging.getLogger()
 
 contacts_db = {}
 next_id = 1
 
+
 class MyApiImpl(BaseDefaultApi):
 
-    async def get_contacts(self, page_size: int, page_token: Optional[str] = None) -> GetContacts:
+    async def get_contacts(
+        self, page_size: int, page_token: Optional[str] = None
+    ) -> GetContacts:
         try:
             global contacts_db
             business_contacts_views_total.inc()
@@ -49,7 +54,7 @@ class MyApiImpl(BaseDefaultApi):
                 "age": create_contact_request.age,
                 "email": create_contact_request.email,
                 "city": create_contact_request.city,
-                "description": create_contact_request.description
+                "description": create_contact_request.description,
             }
             update_db_size_gauge(len(contacts_db))
             return None
@@ -70,13 +75,15 @@ class MyApiImpl(BaseDefaultApi):
                 age=contact["age"],
                 email=contact.get("email"),
                 city=contact.get("city"),
-                description=contact.get("description")
+                description=contact.get("description"),
             )
         except Exception as e:
             logger.error(f"get_contact error for id {id}: {e}")
             raise
 
-    async def put_contact(self, id: int, create_contact_request: CreateContactRequest) -> None:
+    async def put_contact(
+        self, id: int, create_contact_request: CreateContactRequest
+    ) -> None:
         try:
             global contacts_db
             business_contacts_updated_total.inc()
@@ -89,14 +96,16 @@ class MyApiImpl(BaseDefaultApi):
                 "age": create_contact_request.age,
                 "email": create_contact_request.email,
                 "city": create_contact_request.city,
-                "description": create_contact_request.description
+                "description": create_contact_request.description,
             }
             return None
         except Exception as e:
             logger.error(f"put_contact error for id {id}: {e}")
             raise
 
-    async def patch_contact(self, id: int, update_contact_request: UpdateContactRequest) -> GetContact:
+    async def patch_contact(
+        self, id: int, update_contact_request: UpdateContactRequest
+    ) -> GetContact:
         try:
             global contacts_db
             business_contacts_patched_total.inc()
@@ -122,7 +131,7 @@ class MyApiImpl(BaseDefaultApi):
                 age=contact["age"],
                 email=contact.get("email"),
                 city=contact.get("city"),
-                description=contact.get("description")
+                description=contact.get("description"),
             )
         except Exception as e:
             logger.error(f"patch_contact error for id {id}: {e}")

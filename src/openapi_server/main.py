@@ -1,32 +1,32 @@
 # coding: utf-8
 import logging
 from logging.handlers import RotatingFileHandler
-from opentelemetry import trace
-from opentelemetry.sdk.resources import Resource
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-from opentelemetry.sdk.trace.export import ConsoleSpanExporter, SimpleSpanProcessor
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 from fastapi import FastAPI
+from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+    SimpleSpanProcessor,
+)
 from prometheus_fastapi_instrumentator import Instrumentator
-from openapi_server.apis.default_api import router as DefaultApiRouter
 
 # Импортируем метрики из отдельного файла (чтобы они зарегистрировались)
 from metrics import *
-
+from openapi_server.apis.default_api import router as DefaultApiRouter
 
 file_handler = RotatingFileHandler(
-    '/var/log/myapp/app.log',  
-    maxBytes=10_000_000,      
-    backupCount=1
+    "/var/log/myapp/app.log", maxBytes=10_000_000, backupCount=1
 )
 
 logging.basicConfig(
     handlers=[file_handler],
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 
 app = FastAPI(
@@ -37,24 +37,17 @@ app = FastAPI(
 
 Instrumentator().instrument(app).expose(app)
 
-resource = Resource.create({
-    "service.name": "my-app",
-    "service.version": "1.0.0"
-})
+resource = Resource.create({"service.name": "my-app", "service.version": "1.0.0"})
 
 provider = TracerProvider(resource=resource)
 
-otlp_endpoint = "localhost:4343" 
-otlp_exporter = OTLPSpanExporter(
-    endpoint=otlp_endpoint,
-    insecure=True  
-)
+otlp_endpoint = "localhost:4343"
+otlp_exporter = OTLPSpanExporter(endpoint=otlp_endpoint, insecure=True)
 
 # console_exporter = ConsoleSpanExporter()
 # provider.add_span_processor(SimpleSpanProcessor(console_exporter))
 
 provider.add_span_processor(BatchSpanProcessor(otlp_exporter))
-
 
 
 trace.set_tracer_provider(provider)
