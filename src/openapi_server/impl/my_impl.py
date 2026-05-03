@@ -1,6 +1,6 @@
 # coding: utf-8
 import logging
-from typing import Optional
+from typing import Dict, Any, Optional
 
 from fastapi import HTTPException
 
@@ -21,7 +21,7 @@ from openapi_server.models.update_contact_request import UpdateContactRequest
 
 logger = logging.getLogger()
 
-contacts_db = {}
+contacts_db: Dict[int, dict] = {}
 next_id = 1
 
 
@@ -34,7 +34,7 @@ class MyApiImpl(BaseDefaultApi):
             global contacts_db
             business_contacts_views_total.inc()
             contacts_list = list(contacts_db.values())
-            return GetContacts(contacts=contacts_list, page_token=None)
+            return GetContacts(contacts=contacts_list, pageToken=None)
         except Exception as e:
             logger.error(f"get_contacts error: {e}")
             raise
@@ -70,9 +70,9 @@ class MyApiImpl(BaseDefaultApi):
                 raise HTTPException(status_code=404, detail="Contact not found")
             contact = contacts_db[id]
             return GetContact(
-                name=contact["name"],
-                number=contact["number"],
-                age=contact["age"],
+                name=str(contact.get("name", "")),
+                number=str(contact.get("number", "")),
+                age=int(contact.get("age", 0)),
                 email=contact.get("email"),
                 city=contact.get("city"),
                 description=contact.get("description"),
@@ -126,9 +126,9 @@ class MyApiImpl(BaseDefaultApi):
                 contact["description"] = update_contact_request.description
             contacts_db[id] = contact
             return GetContact(
-                name=contact["name"],
-                number=contact["number"],
-                age=contact["age"],
+                name=str(contact.get("name", "")),
+                number=str(contact.get("number", "")),
+                age=int(contact.get("age", 0)),
                 email=contact.get("email"),
                 city=contact.get("city"),
                 description=contact.get("description"),

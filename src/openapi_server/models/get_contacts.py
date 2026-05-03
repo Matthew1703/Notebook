@@ -98,11 +98,9 @@ class GetContacts(BaseModel):
 
         _obj = cls.model_validate(
             {
-                "contacts": (
-                    [GetContact.from_dict(_item) for _item in obj.get("contacts")]
-                    if obj.get("contacts") is not None
-                    else None
-                ),
+                "contacts": [
+                    GetContact.from_dict(_item) for _item in (obj.get("contacts") or [])
+                ] or None,  
                 "pageToken": obj.get("pageToken"),
             }
         )

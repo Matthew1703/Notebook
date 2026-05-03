@@ -18,8 +18,7 @@ from openapi_server.models.update_contact_request import UpdateContactRequest
 
 router = APIRouter()
 
-ns_pkg = openapi_server.impl
-for _, name, _ in pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + "."):
+for _, name, _ in pkgutil.iter_modules(openapi_server.__path__, openapi_server.__name__ + "."):
     importlib.import_module(name)
 
 logger = logging.getLogger(__name__)

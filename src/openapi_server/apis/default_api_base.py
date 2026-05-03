@@ -29,26 +29,31 @@ class BaseDefaultApi:
                 description="Paging token (opaque string, may be JSON-serialized internally)"
             ),
         ],
-    ) -> GetContacts: ...
+    ) -> GetContacts:
+        raise NotImplementedError
 
     async def post_contact(
         self,
         create_contact_request: CreateContactRequest,
-    ) -> None: ...
+    ) -> None: 
+        raise NotImplementedError
 
     async def get_contact(
         self,
         id: StrictInt,
-    ) -> GetContact: ...
+    ) -> GetContact: 
+        raise NotImplementedError
 
     async def put_contact(
         self,
         id: StrictInt,
         create_contact_request: CreateContactRequest,
-    ) -> None: ...
+    ) -> None: 
+        raise NotImplementedError
 
     async def patch_contact(
         self,
         id: StrictInt,
         update_contact_request: UpdateContactRequest,
-    ) -> GetContact: ...
+    ) -> GetContact: 
+        raise NotImplementedError
