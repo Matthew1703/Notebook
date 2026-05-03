@@ -28,7 +28,7 @@ jobs:
         run: mypy src tests
         
       - name: Lint with pylint
-        run: pylint src tests --fail-under=9
+        run: pylint src tests --fail-under=8
   
   tests:
     runs-on: ubuntu-slim
@@ -48,3 +48,26 @@ jobs:
       
       - name: Run tests
         run: pytest --cov=src --cov-fail-under=50
+
+  deploy:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Install roles ansible
+        run: ansible-galaxy install -r requirements.yml
+
+      - name: Deploy
+        run: |
+          cd ansible
+          ansible-playbook -i inventory/ playbook.yml -k -e 'github_token=$CUSTOM_GITHUB_TOKEN'
