@@ -68,5 +68,6 @@ PYTHONPATH=src pytest tests
 <img width="1792" height="952" alt="Снимок экрана 2026-05-02 в 15 15 21" src="https://github.com/user-attachments/assets/548bdb58-9afc-4313-9340-48a92da29478" />
 Поделал запросы:
 <img width="1790" height="777" alt="Снимок экрана 2026-05-02 в 15 21 49" src="https://github.com/user-attachments/assets/f6601984-1751-4889-a704-9c9a5c02bd15" />
+<img width="1792" height="875" alt="Снимок экрана 2026-05-02 в 15 31 36" src="https://github.com/user-attachments/assets/9a86eedb-8880-4af7-9b54-4cc601faecd7" />
 
 
