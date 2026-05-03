@@ -31,6 +31,7 @@ jobs:
         run: pylint src tests --fail-under=9
   
   tests:
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v4
 
