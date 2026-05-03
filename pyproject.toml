@@ -43,3 +43,15 @@ ignore_errors = true
 [[tool.mypy.overrides]]
 module = "metrics"
 ignore_errors = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+markers = [
+    "asyncio: marks tests as async",
+]
+testpaths = ["tests"]
+addopts = [
+    "--cov=src",
+    "--cov-fail-under=50",
+    "--cov-report=term-missing",
+]

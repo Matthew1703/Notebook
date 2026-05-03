@@ -1,4 +1,3 @@
-# pylint: skip-file
 """Реализация API для работы с контактами.
 
 Содержит бизнес-логику CRUD операций с контактами,
@@ -11,7 +10,7 @@ from typing import Dict, Optional
 
 from fastapi import HTTPException
 
-# Импорт метрик (wildcard-импорт отключен для pylint)
+# Импорт метрик
 from metrics import (  # pylint: disable=wildcard-import
     business_contact_age_histogram,
     business_contact_views_total,
@@ -31,7 +30,14 @@ logger = logging.getLogger()
 
 # In-memory хранилище контактов
 contacts_db: Dict[int, dict] = {}
-_next_id = 1  # Переименовано в _next_id для UPPER_CASE
+_next_id = 1
+
+
+def reset_db() -> None:
+    """Сбрасывает состояние базы данных для тестов."""
+    global contacts_db, _next_id
+    contacts_db.clear()
+    _next_id = 1
 
 
 class MyApiImpl(BaseDefaultApi):
@@ -43,7 +49,6 @@ class MyApiImpl(BaseDefaultApi):
         """Возвращает список всех контактов."""
         # pylint: disable=unused-argument
         try:
-            global contacts_db  # noqa: PLW0602
             business_contacts_views_total.inc()
             # Преобразуем словари в объекты GetContact
             contacts_list = [
@@ -64,8 +69,8 @@ class MyApiImpl(BaseDefaultApi):
 
     async def post_contact(self, create_contact_request: CreateContactRequest) -> None:
         """Создаёт новый контакт."""
+        global _next_id
         try:
-            global contacts_db, _next_id  # noqa: PLW0602
             business_contacts_created_total.inc()
             if create_contact_request.age is not None:
                 business_contact_age_histogram.observe(create_contact_request.age)
@@ -89,10 +94,9 @@ class MyApiImpl(BaseDefaultApi):
     async def get_contact(self, contact_id: int) -> GetContact:
         """Возвращает контакт по ID."""
         try:
-            global contacts_db  # noqa: PLW0602
-            business_contact_views_total.inc()
             if contact_id not in contacts_db:
                 raise HTTPException(status_code=404, detail="Contact not found")
+            business_contact_views_total.inc()
             contact = contacts_db[contact_id]
             return GetContact(
                 name=str(contact.get("name", "")),
@@ -111,10 +115,9 @@ class MyApiImpl(BaseDefaultApi):
     ) -> None:
         """Полностью обновляет существующий контакт."""
         try:
-            global contacts_db  # noqa: PLW0602
-            business_contacts_updated_total.inc()
             if contact_id not in contacts_db:
                 raise HTTPException(status_code=404, detail="Contact not found")
+            business_contacts_updated_total.inc()
             contacts_db[contact_id] = {
                 "id": contact_id,
                 "name": create_contact_request.name,
@@ -134,10 +137,9 @@ class MyApiImpl(BaseDefaultApi):
     ) -> GetContact:
         """Частично обновляет существующий контакт."""
         try:
-            global contacts_db  # noqa: PLW0602
-            business_contacts_patched_total.inc()
             if contact_id not in contacts_db:
                 raise HTTPException(status_code=404, detail="Contact not found")
+            business_contacts_patched_total.inc()
             contact = contacts_db[contact_id]
             if update_contact_request.name is not None:
                 contact["name"] = update_contact_request.name

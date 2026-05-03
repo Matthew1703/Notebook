@@ -1,5 +1,5 @@
-# pylint: skip-file
 # tests/test_my_api_impl.py
+# pylint: skip-file
 import os
 import sys
 
@@ -18,13 +18,15 @@ from openapi_server.models.update_contact_request import UpdateContactRequest
 
 @pytest.fixture
 def api_impl():
-    my_impl_module.contacts_db.clear()
-    my_impl_module.next_id = 1
+    """Фикстура для создания экземпляра API с чистой БД."""
+    # Используем функцию reset_db из модуля
+    my_impl_module.reset_db()
     return MyApiImpl()
 
 
 @pytest.fixture
 def sample_contact_data():
+    """Фикстура с тестовыми данными контакта."""
     return {
         "name": "John Doe",
         "number": "79161234567",
@@ -37,12 +39,16 @@ def sample_contact_data():
 
 @pytest.fixture
 def create_request(sample_contact_data):
+    """Фикстура для CreateContactRequest."""
     return CreateContactRequest(**sample_contact_data)
 
 
 class TestPostContact:
+    """Тесты для создания контакта."""
+
     @pytest.mark.asyncio
     async def test_create_contact_success(self, api_impl, create_request):
+        """Успешное создание контакта."""
         result = await api_impl.post_contact(create_request)
 
         assert result is None
@@ -51,6 +57,7 @@ class TestPostContact:
 
     @pytest.mark.asyncio
     async def test_create_contact_increments_id(self, api_impl, create_request):
+        """Проверка инкремента ID при создании нескольких контактов."""
         await api_impl.post_contact(create_request)
         await api_impl.post_contact(create_request)
 
@@ -60,8 +67,11 @@ class TestPostContact:
 
 
 class TestGetContact:
+    """Тесты для получения контакта по ID."""
+
     @pytest.mark.asyncio
     async def test_get_contact_success(self, api_impl, create_request):
+        """Успешное получение существующего контакта."""
         await api_impl.post_contact(create_request)
 
         result = await api_impl.get_contact(1)
@@ -74,6 +84,7 @@ class TestGetContact:
 
     @pytest.mark.asyncio
     async def test_get_contact_not_found(self, api_impl):
+        """Получение несуществующего контакта — ожидаем 404."""
         with pytest.raises(HTTPException) as exc_info:
             await api_impl.get_contact(999)
 
@@ -82,19 +93,20 @@ class TestGetContact:
 
 
 class TestGetContacts:
+    """Тесты для получения списка контактов."""
+
     @pytest.mark.asyncio
     async def test_get_contacts_empty(self, api_impl):
-        """Получение списка когда нет контактов — возвращает пустой список"""
+        """Получение списка когда нет контактов."""
         result = await api_impl.get_contacts(page_size=10)
 
         assert isinstance(result, GetContacts)
-        # ✅ Исправлено: contacts может быть пустым списком
-        # Модель GetContacts не запрещает пустые списки, если min_length не указан
         assert result.contacts == []
-        assert result.page_token is None  # или не проверяем page_token
+        assert result.page_token is None
 
     @pytest.mark.asyncio
     async def test_get_contacts_with_data(self, api_impl, create_request):
+        """Получение списка когда есть контакты."""
         await api_impl.post_contact(create_request)
         await api_impl.post_contact(create_request)
 
@@ -106,8 +118,11 @@ class TestGetContacts:
 
 
 class TestPutContact:
+    """Тесты для полного обновления контакта."""
+
     @pytest.mark.asyncio
     async def test_put_contact_success(self, api_impl, create_request):
+        """Успешное обновление существующего контакта."""
         await api_impl.post_contact(create_request)
 
         updated_data = {
@@ -127,6 +142,7 @@ class TestPutContact:
 
     @pytest.mark.asyncio
     async def test_put_contact_not_found(self, api_impl, create_request):
+        """Обновление несуществующего контакта — ожидаем 404."""
         with pytest.raises(HTTPException) as exc_info:
             await api_impl.put_contact(999, create_request)
 
@@ -134,8 +150,11 @@ class TestPutContact:
 
 
 class TestPatchContact:
+    """Тесты для частичного обновления контакта."""
+
     @pytest.mark.asyncio
     async def test_patch_contact_success(self, api_impl, create_request):
+        """Успешное частичное обновление контакта."""
         await api_impl.post_contact(create_request)
 
         patch_request = UpdateContactRequest(name="John Updated", age=31, city=None)
@@ -145,11 +164,11 @@ class TestPatchContact:
         assert result.name == "John Updated"
         assert result.age == 31
         assert result.number == "79161234567"
-        # ✅ Исправлено: city НЕ должен меняться, если не передан (остаётся Moscow)
-        assert result.city == "Moscow"  # было Moscow, city=None не меняет
+        assert result.city == "Moscow"
 
     @pytest.mark.asyncio
     async def test_patch_contact_not_found(self, api_impl):
+        """Частичное обновление несуществующего контакта — ожидаем 404."""
         patch_request = UpdateContactRequest(name="Test")
         with pytest.raises(HTTPException) as exc_info:
             await api_impl.patch_contact(999, patch_request)
@@ -158,8 +177,11 @@ class TestPatchContact:
 
 
 class TestE2E:
+    """Сквозные тесты API."""
+
     @pytest.mark.asyncio
     async def test_full_crud_flow(self, api_impl):
+        """Сквозной CRUD-сценарий."""
         result = await api_impl.get_contacts(page_size=10)
         assert len(result.contacts) == 0
 
