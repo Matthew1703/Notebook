@@ -33,8 +33,19 @@ class MyApiImpl(BaseDefaultApi):
         try:
             global contacts_db
             business_contacts_views_total.inc()
-            contacts_list = list(contacts_db.values())
-            return GetContacts(contacts=contacts_list, pageToken=None)
+            # ✅ Преобразуем словари в объекты GetContact
+            contacts_list = [
+                GetContact(
+                    name=str(contact.get("name", "")),
+                    number=str(contact.get("number", "")),
+                    age=int(contact.get("age", 0)),
+                    email=contact.get("email"),
+                    city=contact.get("city"),
+                    description=contact.get("description"),
+                )
+                for contact in contacts_db.values()
+            ]
+            return GetContacts(contacts=contacts_list)
         except Exception as e:
             logger.error(f"get_contacts error: {e}")
             raise

@@ -18,9 +18,9 @@ from openapi_server.models.update_contact_request import UpdateContactRequest
 
 router = APIRouter()
 
-for _, name, _ in pkgutil.iter_modules(
-    openapi_server.__path__, openapi_server.__name__ + "."
-):
+impl_pkg = openapi_server.impl
+
+for _, name, _ in pkgutil.iter_modules(impl_pkg.__path__, impl_pkg.__name__ + "."):
     importlib.import_module(name)
 
 logger = logging.getLogger(__name__)
