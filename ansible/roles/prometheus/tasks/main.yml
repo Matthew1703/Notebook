@@ -1,0 +1,102 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: prometheus / Update packages
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: prometheus / Create prometheus group
+  ansible.builtin.group:
+    name: prometheus
+    state: present
+
+- name: prometheus / Create prometheus user
+  ansible.builtin.user:
+    name: prometheus
+    group: prometheus
+    shell: /sbin/nologin
+    home: /home/prometheus
+
+- name: prometheus / Create directory /etc/prometheus
+  ansible.builtin.file:
+    path: /etc/prometheus
+    state: directory
+    mode: '0755'
+    owner: prometheus
+    group: prometheus
+
+- name: prometheus / Create directory /var/lib/prometheus
+  ansible.builtin.file:
+    path: /var/lib/prometheus
+    state: directory
+    mode: '0755'
+    owner: prometheus
+    group: prometheus
+
+- name: prometheus / Download prometheus
+  ansible.builtin.get_url:
+    url: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+    dest: "/tmp/prometheus-{{ prometheus_version }}.tar.gz"
+    mode: '0750'
+
+- name: prometheus / Extract prometheus.tar.gz
+  ansible.builtin.unarchive:
+    src: "/tmp/prometheus-{{ prometheus_version }}.tar.gz"
+    dest: /tmp/
+    remote_src: yes
+
+- name: prometheus / Copy prom files
+  ansible.builtin.copy:
+    src: "{{ file.src }}"
+    dest: "{{ file.dest }}"
+    remote_src: yes
+    mode: '0755'
+    owner: prometheus
+    group: prometheus
+  loop_control:
+    loop_var: file
+  loop:
+    - src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/prometheus"
+      dest: "/usr/local/bin/prometheus"
+    - src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/promtool"
+      dest: "/usr/local/bin/promtool"
+
+- name: prometheus / Copy prom files
+  ansible.builtin.copy:
+    src: "{{ file.src }}"
+    dest: "{{ file.dest }}"
+    remote_src: yes
+    mode: '0755'
+    owner: prometheus
+    group: prometheus
+  loop_control:
+    loop_var: file
+  loop:
+    - src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/consoles"
+      dest: "/etc/prometheus/consoles"
+    - src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/console_libraries"
+      dest: "/etc/prometheus/console_libraries"
+
+- name: prometheus / Copy prometheus.yml
+  ansible.builtin.template:    
+    src: "{{ monitoring_localconfig_path }}/files/prometheus.yml"
+    dest: "/etc/prometheus/prometheus.yml"
+    mode: '0755'
+    owner: prometheus
+    group: prometheus
+  notify: Restart prometheus service
+
+- name: prometheus / Copy unit file
+  ansible.builtin.copy:
+    src: "{{ monitoring_localconfig_path }}/files/prometheus.service"
+    dest: /etc/systemd/system/prometheus.service
+    owner: prometheus
+    group: prometheus
+    mode: '0750'
+
+- name: prometheus / Start prometheus service
+  systemd:
+    state: started
+    daemon_reload: true
+    enabled: true
+    name: "{{ prometheus_service }}"
+# tasks file for prometheus

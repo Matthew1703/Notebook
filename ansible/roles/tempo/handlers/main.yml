@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: MIT-0
+---
+# handlers file for tempo
+
+- name: tempo / restart tempo
+  ansible.builtin.systemd:
+    name: tempo
+    state: restarted
+    daemon_reload: yes
+  become: yes

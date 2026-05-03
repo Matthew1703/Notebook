@@ -1,0 +1,9 @@
+#SPDX-License-Identifier: MIT-0
+---
+# handlers file for otl-collector
+- name: otl-collector / restart otelcol
+  ansible.builtin.systemd:
+    name: otelcol
+    state: restarted
+    daemon_reload: yes
+  become: yes

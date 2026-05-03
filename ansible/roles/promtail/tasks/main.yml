@@ -1,0 +1,61 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: promtail / Download Promtail binary
+  get_url:
+    url: "https://github.com/grafana/loki/releases/download/v2.9.0/promtail-linux-amd64.zip"
+    dest: /tmp/promtail.zip
+    force: yes
+
+- name: promtail / Install unzip
+  apt:
+    name: unzip
+    state: present
+    update_cache: yes
+
+- name: promtail / Extract and rename promtail
+  unarchive:
+    src: /tmp/promtail.zip
+    dest: /tmp/
+    remote_src: yes
+
+- name: promtail / Move promtail to bin directory
+  copy:
+    src: /tmp/promtail-linux-amd64
+    dest: /usr/local/bin/promtail
+    owner: root
+    group: root
+    mode: '0755'
+    remote_src: yes
+
+- name: promtail / Create Promtail config directory
+  file:
+    path: /etc/promtail
+    state: directory
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: promtail / Deploy Promtail config
+  template:
+    src: "{{ app_localconfig_path }}/files/promtail_config.yaml"
+    dest: /etc/promtail/config.yml
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart promtail service
+
+- name: promtail / Deploy Promtail systemd service
+  template:
+    src: "{{ app_localconfig_path }}/files/promtail.service"
+    dest: /etc/systemd/system/promtail.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: promtail / Start Promtail service
+  systemd:
+    name: "{{ promtail_service }}"
+    state: started
+    enabled: yes
+    daemon_reload: yes
+# tasks file for promtail

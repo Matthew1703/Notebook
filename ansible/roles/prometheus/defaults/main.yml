@@ -1,0 +1,5 @@
+#SPDX-License-Identifier: MIT-0
+---
+prometheus_service: prometheus
+prometheus_version: 2.53.2
+# defaults file for prometheus

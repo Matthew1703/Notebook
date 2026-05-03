@@ -1,0 +1,24 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for tempo
+- name: tempo / Update apt
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: tempo / Download .deb package
+  ansible.builtin.get_url:
+    url: https://github.com/grafana/tempo/releases/download/v{{ tempo_version }}/tempo_{{ tempo_version }}_linux_amd64.deb
+    dest: /tmp/tempo.deb
+    mode: '0644'
+
+- name: tempo / Install .deb package 
+  ansible.builtin.apt:
+    deb: /tmp/tempo.deb
+  become: yes
+
+- name: tempo / copy congig.yaml
+  ansible.builtin.copy:
+    src: "{{ monitoring_localconfig_path }}/files/tempo-config.yaml"
+    dest: /etc/tempo/config.yml
+    mode: '0644'
+  notify: tempo / restart tempo

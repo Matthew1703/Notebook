@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: Restart loki service
+  listen: Restart loki service
+  systemd:
+    state: restarted
+    daemon_reload: true
+    enabled: true
+    name: "{{ loki_service }}"
+# handlers file for loki

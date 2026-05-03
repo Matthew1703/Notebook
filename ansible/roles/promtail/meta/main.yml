@@ -1,0 +1,14 @@
+galaxy_info:
+  author: matthew
+  description: Promtail server deployment role
+  company: ansible
+  role_name: promtail
+  namespace: matthew1703
+
+  license: BSD
+
+  min_ansible_version: 2.1
+
+  galaxy_tags: []
+
+dependencies: []
