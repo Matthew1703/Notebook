@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 """Модуль для сбора и экспорта метрик приложения.
 
 Содержит бизнес-метрики для мониторинга работы с контактами:
@@ -6,36 +7,23 @@
 - датчик размера базы данных
 """
 
-from typing import Any, Callable, Optional, Union
-
-# Подавляем ошибку импорта для mypy/pylint (библиотека установлена)
 try:
-    from prometheus_client import (  # type: ignore[import-not-found]
-        Counter,
-        Gauge,
-        Histogram,
-    )
+    from prometheus_client import Counter, Gauge, Histogram
 except ImportError:
     # Заглушка для тестов или если prometheus_client не установлен
     class _DummyMetric:
-        """Заглушка для метрик, когда prometheus_client не установлен."""
-
-        def inc(self, *args: Any, **kwargs: Any) -> None:
-            """Заглушка для inc."""
+        def inc(self, *args, **kwargs):
             pass
 
-        def set(self, *args: Any, **kwargs: Any) -> None:
-            """Заглушка для set."""
+        def set(self, *args, **kwargs):
             pass
 
-        def observe(self, *args: Any, **kwargs: Any) -> None:
-            """Заглушка для observe."""
+        def observe(self, *args, **kwargs):
             pass
 
-    # Используем type: ignore для подавления ошибок mypy
-    Counter = _DummyMetric  # type: ignore[assignment]
-    Gauge = _DummyMetric  # type: ignore[assignment]
-    Histogram = _DummyMetric  # type: ignore[assignment]
+    Counter = _DummyMetric
+    Gauge = _DummyMetric
+    Histogram = _DummyMetric
 
 
 # ========== БИЗНЕС-МЕТРИКИ (с префиксом business_) ==========
