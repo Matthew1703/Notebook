@@ -20,7 +20,7 @@ router = APIRouter()
 
 impl_pkg = openapi_server.impl
 
-for _, name, _ in pkgutil.iter_modules(impl_pkg.__path__, impl_pkg.__name__ + "."):
+for _, name, _ in pkgutil.iter_modules(impl_pkg.__path__, impl_pkg.__name__ + "."): # type: ignore
     importlib.import_module(name)
 
 logger = logging.getLogger(__name__)
