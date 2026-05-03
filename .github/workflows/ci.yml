@@ -69,7 +69,11 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H 159.194.203.159 >> ~/.ssh/known_hosts
 
-      - name: Deploy
+      - name: Run playbook
         run: |
           cd ansible
-          ansible-playbook -i inventory/ playbook.yml -k -e 'github_token=$CUSTOM_GITHUB_TOKEN'
+          ansible-playbook -i inventory/ playbook.yml \
+            -u root \
+            --extra-vars "ansible_ssh_pass=${{ secrets.SERVER_PASSWORD }}" \
+            -e 'github_token=${{ secrets.CUSTOM_GITHUB_TOKEN }}'
+
