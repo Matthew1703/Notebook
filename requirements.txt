@@ -41,3 +41,4 @@ opentelemetry-instrumentation-fastapi==0.49b2
 opentelemetry-proto==1.28.2
 prometheus_fastapi_instrumentator
 pytest
+pytest-cov
