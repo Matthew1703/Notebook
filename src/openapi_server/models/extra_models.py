@@ -13,10 +13,11 @@ except ImportError:
     class BaseModel:  # type: ignore
         """Fallback BaseModel when pydantic is not available."""
 
-        pass
+        # pylint: disable=too-few-public-methods
+        __slots__ = ()
 
 
-class TokenModel(BaseModel):
+class TokenModel(BaseModel):  # pylint: disable=too-few-public-methods
     """Модель для хранения данных токена."""
 
     sub: str

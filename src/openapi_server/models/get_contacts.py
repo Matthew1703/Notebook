@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import json
 import pprint
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, StrictStr
 
@@ -64,7 +64,8 @@ class GetContacts(BaseModel):
             exclude={},
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each item in contacts (list)
+        # override the default output from pydantic by calling
+        # `to_dict()` of each item in contacts (list)
         _items = []
         if self.contacts:
             for _item in self.contacts:

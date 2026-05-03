@@ -16,15 +16,12 @@ except ImportError:
 
         def inc(self, *args, **kwargs):
             """Заглушка для метода inc."""
-            pass
 
         def set(self, *args, **kwargs):
             """Заглушка для метода set."""
-            pass
 
         def observe(self, *args, **kwargs):
             """Заглушка для метода observe."""
-            pass
 
     Counter = _DummyMetric
     Gauge = _DummyMetric

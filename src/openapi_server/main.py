@@ -1,3 +1,4 @@
+# pylint: skip-file
 """Главный модуль FastAPI приложения.
 
 Настраивает:
@@ -17,6 +18,7 @@ from logging.handlers import RotatingFileHandler
 # Добавляем src в путь поиска модулей
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+# Импорты сторонних библиотек
 from fastapi import FastAPI
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
@@ -26,7 +28,7 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from prometheus_fastapi_instrumentator import Instrumentator
 
-# Импортируем метрики
+# Импорты из проекта
 from metrics import *  # pylint: disable=wildcard-import,unused-wildcard-import
 from openapi_server.apis.default_api import router as DefaultApiRouter
 

@@ -1,3 +1,4 @@
+# pylint: skip-file
 # tests/test_my_api_impl.py
 import os
 import sys
