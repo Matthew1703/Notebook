@@ -6,24 +6,36 @@
 - датчик размера базы данных
 """
 
+from typing import Any, Callable, Optional, Union
+
 # Подавляем ошибку импорта для mypy/pylint (библиотека установлена)
 try:
-    from prometheus_client import Counter, Gauge, Histogram
+    from prometheus_client import (  # type: ignore[import-not-found]
+        Counter,
+        Gauge,
+        Histogram,
+    )
 except ImportError:
     # Заглушка для тестов или если prometheus_client не установлен
     class _DummyMetric:
-        def inc(self, *args, **kwargs):
+        """Заглушка для метрик, когда prometheus_client не установлен."""
+
+        def inc(self, *args: Any, **kwargs: Any) -> None:
+            """Заглушка для inc."""
             pass
 
-        def set(self, *args, **kwargs):
+        def set(self, *args: Any, **kwargs: Any) -> None:
+            """Заглушка для set."""
             pass
 
-        def observe(self, *args, **kwargs):
+        def observe(self, *args: Any, **kwargs: Any) -> None:
+            """Заглушка для observe."""
             pass
 
-    Counter = _DummyMetric
-    Gauge = _DummyMetric
-    Histogram = _DummyMetric
+    # Используем type: ignore для подавления ошибок mypy
+    Counter = _DummyMetric  # type: ignore[assignment]
+    Gauge = _DummyMetric  # type: ignore[assignment]
+    Histogram = _DummyMetric  # type: ignore[assignment]
 
 
 # ========== БИЗНЕС-МЕТРИКИ (с префиксом business_) ==========
