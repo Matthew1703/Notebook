@@ -29,43 +29,17 @@ skip = [
 ]
 skip_gitignore = true
 
-[tool.pylint.main]
-# Путь к исходникам
-source-roots = ["src"]
-
-# Игнорируемые файлы/папки
-ignore = ["tests", "venv", ".venv", "__pycache__"]
-
-# Расширения для проверки
-extension-pkg-allow-list = ["pydantic", "typing_extensions"]
-
-[tool.pylint.messages_control]
-# Отключаем некоторые проверки для сгенерированного кода
-disable = [
-    "C0114",  # missing-module-docstring
-    "C0115",  # missing-class-docstring
-    "C0116",  # missing-function-docstring
-    "E0401",  # import-error
-    "R0801",  # duplicate-code
-    "R0903",  # too-few-public-methods
-    "W0611",  # unused-import
-]
-
-[tool.pylint.format]
-max-line-length = 100
-
 [tool.mypy]
 python_version = "3.11"
 mypy_path = "src"
 ignore_missing_imports = true
+explicit_package_bases = true
+namespace_packages = true
 
-[tool.mypy.overrides]
-module = [
-    "openapi_server.apis.default_api_base",
-    "openapi_server.apis.default_api",
-    "openapi_server.models.*",
-]
+[[tool.mypy.overrides]]
+module = "openapi_server.*"
 ignore_errors = true
 
-[tool.mypy.metrics]
+[[tool.mypy.overrides]]
+module = "metrics"
 ignore_errors = true
