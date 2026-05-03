@@ -34,7 +34,7 @@ class GetContacts(BaseModel):
     GetContacts
     """  # noqa: E501
 
-    contacts: Annotated[List[GetContact], Field(min_length=1)]
+    contacts: List[GetContact] = Field(default_factory=list)
     page_token: Optional[StrictStr] = Field(default=None, alias="pageToken")
     __properties: ClassVar[List[str]] = ["contacts", "pageToken"]
 
