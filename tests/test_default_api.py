@@ -20,16 +20,14 @@ def test_get_contacts(client: TestClient):
     params = [("page_token", 'page_token_example'),     ("page_size", 100)]
     headers = {
     }
-    # uncomment below to make a request
-    #response = client.request(
-    #    "GET",
-    #    "/api/contacts",
-    #    headers=headers,
-    #    params=params,
-    #)
+    response = client.request(
+       "GET",
+       "/api/contacts",
+       headers=headers,
+       params=params,
+    )
 
-    # uncomment below to assert the status code of the HTTP response
-    #assert response.status_code == 200
+    assert response.status_code == 200
 
 
 def test_post_contact(client: TestClient):
@@ -41,16 +39,15 @@ def test_post_contact(client: TestClient):
 
     headers = {
     }
-    # uncomment below to make a request
-    #response = client.request(
-    #    "POST",
-    #    "/api/contacts",
-    #    headers=headers,
-    #    json=create_contact_request,
-    #)
 
-    # uncomment below to assert the status code of the HTTP response
-    #assert response.status_code == 200
+    response = client.request(
+       "POST",
+       "/api/contacts",
+       headers=headers,
+       json=create_contact_request,
+    )
+
+    assert response.status_code == 200
 
 
 def test_get_contact(client: TestClient):
@@ -61,15 +58,14 @@ def test_get_contact(client: TestClient):
 
     headers = {
     }
-    # uncomment below to make a request
-    #response = client.request(
-    #    "GET",
-    #    "/api/contact/{id}".format(id=33),
-    #    headers=headers,
-    #)
 
-    # uncomment below to assert the status code of the HTTP response
-    #assert response.status_code == 200
+    response = client.request(
+       "GET",
+       "/api/contact/{id}".format(id=33),
+       headers=headers,
+    )
+
+    assert response.status_code == 200
 
 
 def test_put_contact(client: TestClient):
@@ -81,16 +77,15 @@ def test_put_contact(client: TestClient):
 
     headers = {
     }
-    # uncomment below to make a request
-    #response = client.request(
-    #    "PUT",
-    #    "/api/contact/{id}".format(id=33),
-    #    headers=headers,
-    #    json=create_contact_request,
-    #)
 
-    # uncomment below to assert the status code of the HTTP response
-    #assert response.status_code == 200
+    response = client.request(
+       "PUT",
+       "/api/contact/{id}".format(id=33),
+       headers=headers,
+       json=create_contact_request,
+    )
+
+    assert response.status_code == 200
 
 
 def test_patch_contact(client: TestClient):
@@ -102,14 +97,12 @@ def test_patch_contact(client: TestClient):
 
     headers = {
     }
-    # uncomment below to make a request
-    #response = client.request(
-    #    "PATCH",
-    #    "/api/contact/{id}".format(id=33),
-    #    headers=headers,
-    #    json=update_contact_request,
-    #)
+    response = client.request(
+       "PATCH",
+       "/api/contact/{id}".format(id=33),
+       headers=headers,
+       json=update_contact_request,
+    )
 
-    # uncomment below to assert the status code of the HTTP response
-    #assert response.status_code == 200
+    assert response.status_code == 200
 
