@@ -15,18 +15,23 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, StrictStr
 
-from openapi_server.models.get_contact import GetContact
-
 try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
 
 
+# Отложенный импорт для избежания циклических зависимостей
+def _get_contact_model():
+    from openapi_server.models.get_contact import GetContact
+
+    return GetContact
+
+
 class GetContacts(BaseModel):
     """Модель ответа со списком контактов."""
 
-    contacts: List[GetContact] = Field(default_factory=list)
+    contacts: List = Field(default_factory=list)
     page_token: Optional[StrictStr] = Field(default=None, alias="pageToken")
 
     model_config = {
@@ -66,11 +71,13 @@ class GetContacts(BaseModel):
         )
         # override the default output from pydantic by calling
         # `to_dict()` of each item in contacts (list)
-        _items = []
-        if self.contacts:
+        if self.contacts and isinstance(self.contacts, list):
+            _items = []
             for _item in self.contacts:
-                if _item:
+                if hasattr(_item, "to_dict"):
                     _items.append(_item.to_dict())
+                else:
+                    _items.append(_item)
             _dict["contacts"] = _items
         # set to None if page_token (nullable) is None
         # and model_fields_set contains the field
@@ -87,6 +94,9 @@ class GetContacts(BaseModel):
 
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
+
+        # Получаем модель GetContact для преобразования
+        GetContact = _get_contact_model()
 
         _obj = cls.model_validate(
             {
