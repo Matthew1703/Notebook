@@ -64,6 +64,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
+      - name: Add GitLab to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H gitlab.com >> ~/.ssh/known_hosts
+
       - name: Install roles ansible
         run: |
           cd ansible
