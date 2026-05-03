@@ -1,5 +1,11 @@
-# coding: utf-8
+"""Модуль аутентификации и безопасности для API.
 
+Содержит настройки для различных методов аутентификации:
+- HTTP Basic, HTTP Bearer
+- OAuth2, API Keys
+"""
+
+# Все импорты ниже используются в сгенерированном коде и отключены от проверок
 from typing import List
 
 from fastapi import Depends, Security  # noqa: F401

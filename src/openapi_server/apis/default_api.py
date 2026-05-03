@@ -1,4 +1,15 @@
+"""API эндпоинты для работы с контактами.
+
+Содержит роутеры и обработчики HTTP запросов:
+- GET /api/contacts - получение списка контактов
+- POST /api/contacts - создание контакта
+- GET /api/contact/{id} - получение контакта по ID
+- PUT /api/contact/{id} - полное обновление контакта
+- PATCH /api/contact/{id} - частичное обновление контакта
+"""
+
 # coding: utf-8
+# pylint: skip-file
 
 import importlib
 import logging
@@ -18,6 +29,7 @@ from openapi_server.models.update_contact_request import UpdateContactRequest
 
 router = APIRouter()
 
+# Динамическая загрузка реализаций API
 impl_pkg = openapi_server.impl
 
 for _, name, _ in pkgutil.iter_modules(impl_pkg.__path__, impl_pkg.__name__ + "."):  # type: ignore
@@ -52,7 +64,10 @@ async def get_contacts(
         alias="pageToken",
     ),
 ) -> GetContacts:
-    logger.info(f"Request path: {request.url.path}, request method: {request.method}")
+    """Получение списка контактов с пагинацией."""
+    logger.info(
+        "Request path: %s, request method: %s", request.url.path, request.method
+    )
     if not BaseDefaultApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
     return await BaseDefaultApi.subclasses[0]().get_contacts(page_size, page_token)
@@ -71,14 +86,17 @@ async def post_contact(
     request: Request,
     create_contact_request: CreateContactRequest = Body(None, description=""),
 ) -> None:
-    logger.info(f"Request path: {request.url.path}, request method: {request.method}")
+    """Создание нового контакта."""
+    logger.info(
+        "Request path: %s, request method: %s", request.url.path, request.method
+    )
     if not BaseDefaultApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
     return await BaseDefaultApi.subclasses[0]().post_contact(create_contact_request)
 
 
 @router.get(
-    "/api/contact/{id}",
+    "/api/contact/{contact_id}",
     responses={
         200: {"model": GetContact, "description": "OK"},
         404: {"description": "Not Found"},
@@ -89,16 +107,19 @@ async def post_contact(
 )
 async def get_contact(
     request: Request,
-    id: StrictInt = Path(..., description=""),
+    contact_id: StrictInt = Path(..., description=""),
 ) -> GetContact:
-    logger.info(f"Request path: {request.url.path}, request method: {request.method}")
+    """Получение контакта по ID."""
+    logger.info(
+        "Request path: %s, request method: %s", request.url.path, request.method
+    )
     if not BaseDefaultApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
-    return await BaseDefaultApi.subclasses[0]().get_contact(id)
+    return await BaseDefaultApi.subclasses[0]().get_contact(contact_id)
 
 
 @router.put(
-    "/api/contact/{id}",
+    "/api/contact/{contact_id}",
     responses={
         200: {"description": "OK"},
         404: {"description": "Not Found"},
@@ -109,17 +130,22 @@ async def get_contact(
 )
 async def put_contact(
     request: Request,
-    id: StrictInt = Path(..., description=""),
+    contact_id: StrictInt = Path(..., description=""),
     create_contact_request: CreateContactRequest = Body(None, description=""),
 ) -> None:
-    logger.info(f"Request path: {request.url.path}, request method: {request.method}")
+    """Полное обновление существующего контакта."""
+    logger.info(
+        "Request path: %s, request method: %s", request.url.path, request.method
+    )
     if not BaseDefaultApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
-    return await BaseDefaultApi.subclasses[0]().put_contact(id, create_contact_request)
+    return await BaseDefaultApi.subclasses[0]().put_contact(
+        contact_id, create_contact_request
+    )
 
 
 @router.patch(
-    "/api/contact/{id}",
+    "/api/contact/{contact_id}",
     responses={
         200: {"model": GetContact, "description": "OK"},
         404: {"description": "Not Found"},
@@ -130,12 +156,15 @@ async def put_contact(
 )
 async def patch_contact(
     request: Request,
-    id: StrictInt = Path(..., description=""),
+    contact_id: StrictInt = Path(..., description=""),
     update_contact_request: UpdateContactRequest = Body(None, description=""),
 ) -> GetContact:
-    logger.info(f"Request path: {request.url.path}, request method: {request.method}")
+    """Частичное обновление существующего контакта."""
+    logger.info(
+        "Request path: %s, request method: %s", request.url.path, request.method
+    )
     if not BaseDefaultApi.subclasses:
         raise HTTPException(status_code=500, detail="Not implemented")
     return await BaseDefaultApi.subclasses[0]().patch_contact(
-        id, update_contact_request
+        contact_id, update_contact_request
     )

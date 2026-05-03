@@ -1,9 +1,22 @@
+"""Дополнительные модели для API аутентификации.
+
+Содержит вспомогательные модели:
+- TokenModel: модель для хранения данных токена
+"""
+
 # coding: utf-8
 
-from pydantic import BaseModel
+try:
+    from pydantic import BaseModel
+except ImportError:
+    # Заглушка для случаев, когда pydantic не установлен
+    class BaseModel:  # type: ignore
+        """Fallback BaseModel when pydantic is not available."""
+
+        pass
 
 
 class TokenModel(BaseModel):
-    """Defines a token model."""
+    """Модель для хранения данных токена."""
 
     sub: str

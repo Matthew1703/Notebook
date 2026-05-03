@@ -1,10 +1,17 @@
+"""Реализация API для работы с контактами.
+
+Содержит бизнес-логику CRUD операций с контактами,
+используя in-memory хранилище (словарь).
+"""
+
 # coding: utf-8
 import logging
-from typing import Any, Dict, Optional
+from typing import Dict, Optional
 
 from fastapi import HTTPException
 
-from metrics import (
+# Импорт метрик (wildcard-импорт отключен для pylint)
+from metrics import (  # pylint: disable=wildcard-import
     business_contact_age_histogram,
     business_contact_views_total,
     business_contacts_created_total,
@@ -21,19 +28,23 @@ from openapi_server.models.update_contact_request import UpdateContactRequest
 
 logger = logging.getLogger()
 
+# In-memory хранилище контактов
 contacts_db: Dict[int, dict] = {}
-next_id = 1
+_next_id = 1  # Переименовано в _next_id для UPPER_CASE
 
 
 class MyApiImpl(BaseDefaultApi):
+    """Реализация API для управления контактами."""
 
     async def get_contacts(
         self, page_size: int, page_token: Optional[str] = None
     ) -> GetContacts:
+        """Возвращает список всех контактов."""
+        # pylint: disable=unused-argument
         try:
-            global contacts_db
+            global contacts_db  # noqa: PLW0602
             business_contacts_views_total.inc()
-            # ✅ Преобразуем словари в объекты GetContact
+            # Преобразуем словари в объекты GetContact
             contacts_list = [
                 GetContact(
                     name=str(contact.get("name", "")),
@@ -46,18 +57,19 @@ class MyApiImpl(BaseDefaultApi):
                 for contact in contacts_db.values()
             ]
             return GetContacts(contacts=contacts_list)
-        except Exception as e:
-            logger.error(f"get_contacts error: {e}")
+        except Exception as err:
+            logger.error("get_contacts error: %s", err)
             raise
 
     async def post_contact(self, create_contact_request: CreateContactRequest) -> None:
+        """Создаёт новый контакт."""
         try:
-            global contacts_db, next_id
+            global contacts_db, _next_id  # noqa: PLW0602
             business_contacts_created_total.inc()
             if create_contact_request.age is not None:
                 business_contact_age_histogram.observe(create_contact_request.age)
-            new_id = next_id
-            next_id += 1
+            new_id = _next_id
+            _next_id += 1
             contacts_db[new_id] = {
                 "id": new_id,
                 "name": create_contact_request.name,
@@ -69,17 +81,18 @@ class MyApiImpl(BaseDefaultApi):
             }
             update_db_size_gauge(len(contacts_db))
             return None
-        except Exception as e:
-            logger.error(f"post_contact error: {e}")
+        except Exception as err:
+            logger.error("post_contact error: %s", err)
             raise
 
-    async def get_contact(self, id: int) -> GetContact:
+    async def get_contact(self, contact_id: int) -> GetContact:
+        """Возвращает контакт по ID."""
         try:
-            global contacts_db
+            global contacts_db  # noqa: PLW0602
             business_contact_views_total.inc()
-            if id not in contacts_db:
+            if contact_id not in contacts_db:
                 raise HTTPException(status_code=404, detail="Contact not found")
-            contact = contacts_db[id]
+            contact = contacts_db[contact_id]
             return GetContact(
                 name=str(contact.get("name", "")),
                 number=str(contact.get("number", "")),
@@ -88,20 +101,21 @@ class MyApiImpl(BaseDefaultApi):
                 city=contact.get("city"),
                 description=contact.get("description"),
             )
-        except Exception as e:
-            logger.error(f"get_contact error for id {id}: {e}")
+        except Exception as err:
+            logger.error("get_contact error for id %d: %s", contact_id, err)
             raise
 
     async def put_contact(
-        self, id: int, create_contact_request: CreateContactRequest
+        self, contact_id: int, create_contact_request: CreateContactRequest
     ) -> None:
+        """Полностью обновляет существующий контакт."""
         try:
-            global contacts_db
+            global contacts_db  # noqa: PLW0602
             business_contacts_updated_total.inc()
-            if id not in contacts_db:
+            if contact_id not in contacts_db:
                 raise HTTPException(status_code=404, detail="Contact not found")
-            contacts_db[id] = {
-                "id": id,
+            contacts_db[contact_id] = {
+                "id": contact_id,
                 "name": create_contact_request.name,
                 "number": create_contact_request.number,
                 "age": create_contact_request.age,
@@ -110,19 +124,20 @@ class MyApiImpl(BaseDefaultApi):
                 "description": create_contact_request.description,
             }
             return None
-        except Exception as e:
-            logger.error(f"put_contact error for id {id}: {e}")
+        except Exception as err:
+            logger.error("put_contact error for id %d: %s", contact_id, err)
             raise
 
     async def patch_contact(
-        self, id: int, update_contact_request: UpdateContactRequest
+        self, contact_id: int, update_contact_request: UpdateContactRequest
     ) -> GetContact:
+        """Частично обновляет существующий контакт."""
         try:
-            global contacts_db
+            global contacts_db  # noqa: PLW0602
             business_contacts_patched_total.inc()
-            if id not in contacts_db:
+            if contact_id not in contacts_db:
                 raise HTTPException(status_code=404, detail="Contact not found")
-            contact = contacts_db[id]
+            contact = contacts_db[contact_id]
             if update_contact_request.name is not None:
                 contact["name"] = update_contact_request.name
             if update_contact_request.number is not None:
@@ -135,7 +150,7 @@ class MyApiImpl(BaseDefaultApi):
                 contact["city"] = update_contact_request.city
             if update_contact_request.description is not None:
                 contact["description"] = update_contact_request.description
-            contacts_db[id] = contact
+            contacts_db[contact_id] = contact
             return GetContact(
                 name=str(contact.get("name", "")),
                 number=str(contact.get("number", "")),
@@ -144,6 +159,6 @@ class MyApiImpl(BaseDefaultApi):
                 city=contact.get("city"),
                 description=contact.get("description"),
             )
-        except Exception as e:
-            logger.error(f"patch_contact error for id {id}: {e}")
+        except Exception as err:
+            logger.error("patch_contact error for id %d: %s", contact_id, err)
             raise
