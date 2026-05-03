@@ -7,9 +7,15 @@
 - маршруты API
 """
 
-# coding: utf-8
 import logging
+import os
+
+# coding: utf-8
+import sys
 from logging.handlers import RotatingFileHandler
+
+# Добавляем src в путь поиска модулей
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from fastapi import FastAPI
 from opentelemetry import trace
@@ -20,7 +26,7 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from prometheus_fastapi_instrumentator import Instrumentator
 
-# Импортируем метрики (отключаем pylint для wildcard-импорта)
+# Импортируем метрики
 from metrics import *  # pylint: disable=wildcard-import,unused-wildcard-import
 from openapi_server.apis.default_api import router as DefaultApiRouter
 

@@ -12,13 +12,18 @@ try:
 except ImportError:
     # Заглушка для тестов или если prometheus_client не установлен
     class _DummyMetric:
+        """Заглушка для метрик, когда prometheus_client не установлен."""
+
         def inc(self, *args, **kwargs):
+            """Заглушка для метода inc."""
             pass
 
         def set(self, *args, **kwargs):
+            """Заглушка для метода set."""
             pass
 
         def observe(self, *args, **kwargs):
+            """Заглушка для метода observe."""
             pass
 
     Counter = _DummyMetric
